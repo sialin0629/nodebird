@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+<!-- 'layout.html' 템플릿 확장 -->
+
+{% block content %}
+<!-- 'content' 블록 시작, 여기서 본문 콘텐츠 정의-->
+  <h1>{{message}}</h1>
+  <!-- 오류 메시지 출력 -->
+  <h2>{{error.status}}</h2>
+  <!-- 오류 상태 코드 출력 -->
+  <pre>{{error.stack}}</pre>
+  <!-- 오류 스택 트레이스 출력 -->
+  <!-- 스택 트레이스(stack trace): 프로그램 실행 중 예외(exception)나 오류(error)가 발생했을 때,
+  그 예외가 발생한 지점과 그 지점까지의 함수 호출 경로를 보여주는 정보 -->
+{% endblock %}
+<!-- 'content' 블록 종료-->

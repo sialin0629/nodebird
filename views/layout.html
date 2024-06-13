@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <!-- 동적으로 페이지 제목 설정 -->
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <!-- 모바일 브라우저에서 레이아웃을 제어하기 위해 뷰포트 설정 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          {% if user and user.id %}
+            <!-- 사용자가 로그인되어 있고 ID가 있는지 확인 -->
+            <div class="user-name">{{'안녕하세요!' + user.nick + "님" }}</div>
+            <!-- 사용자의 닉네임과 함꼐 환영 메시지 표시 -->
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count following-count">{{followingCount}}</div>
+              <!-- 사용자가 팔로잉하는 사람 수 표시 -->
+            </div>
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count follower-count">{{followerCount}}</div>
+              <!-- 사용자의 팔로워 수 표시 -->
+            </div>
+            <input id="my-id" type="hidden" value="{{user.id}}">
+            <!-- 사용자의 ID를 숨겨진 입력 필드에 저장 -->
+            <a id="my-profile" href="/profile" class="btn">내 프로필</a>
+            <!-- 사용자의 프로필 페이지로 이동하는 링크 -->
+            <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+            <!-- 로그아웃 링크 -->
+          {% else %}
+            <!-- 사용자가 로그인하지 않은 경우 로그인 폼 표시 -->
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+                <!-- 이메일 입력 필드 -->
+                <!-- required: 이 입력 필드가 필수 항목임을 지정 -->
+                <!-- autofocus: 페이지가 로드될 때 이 입력 필드에 자동으로 포커스를 맞춤. -->
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+                <!-- 비밀번호 입력 필드 -->
+              </div>
+              <a id="join" href="/join" class="btn">회원가입</a>
+              <!-- 회원가입 페이지로 이동하는 링크 -->
+              <button id="login" type="submit" class="btn">로그인</button>
+              <!-- 로그인 폼 제출 버튼 -->
+              <a id="kakao" href="/auth/kakao" class="btn">카카오톡</a>
+              <!-- 카카오톡으로 로그인 하는 버튼 -->
+            </form>
+          {% endif %}
+        </div>
+        <footer>
+          Made by&nbsp;
+          <a href="https://jongno.sen.hs.kr" target="_blank">종로산업정보학교</a>
+          <!-- 학교 웹사이트로 연결되는 링크가 있는 푸터 -->
+        </footer>
+      </div>
+      {% block content %}
+      <!-- 추가 콘텐츠 블록을 위한 자리 표시자 -->
+      {% endblock %}
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- HTTP 요청을 위해 Axios 라이브러리 포함 -->
+    <script>
+      window.onload = () => {
+        if (new URL(location.href).searchParams.get('error')) {
+          alert(new URL(location.href).searchParams.get('error'));
+        }
+        // URL에 에러 매개변수가 있으면 경고 창을 표시
+      };
+    </script>
+    {% block script %}
+    <!-- 추가 스크립트 블록을 위한 자리 표시자 -->
+    {% endblock %}
+  </body>
+</html>
