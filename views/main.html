@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+<!-- 'layout.html' 레이아웃을 확장 -->
+
+{% block content %}
+  <div class="timeline">
+    {% if user %}
+    <!-- 사용자가 로그인 한 경우-->
+      <div>
+        <form id="twit-form" action="/post" method="post" enctype="multipart/form-data">
+          <!-- 트윗 폼: 게시글을 작성하고 이미지를 업로드하는 폼 -->
+          <div class="input-group">
+            <textarea name="twit" id="content" maxlength="140"></textarea>
+            <!-- 트윗 내용 입력 텍스트 영역, 최대 140자 -->
+          </div>
+          <div class="img-preview">
+            <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
+            <!-- 이미지 미리보기, 처음에는 숨겨져 있음 -->
+            <input id="img-url" type="hidden" name="url">
+            <!-- 업로드된 이미지의 URL을 저장하는 숨겨진 입력 필드 -->
+          </div>
+          <div>
+            <label id="img-label" for="img">사진 업로드</label>
+            <!-- 이미지 업로드를 위한 라벨 -->
+            <input id="img" type="file" accept="image/*">
+            <!-- 이미지 파일 선택 입력 -->
+            <button id="twit-btn" type="submit" class="btn">짹짹</button>
+            <!-- 트윗 제출 버튼 -->
+          </div>
+        </form>
+      </div>
+      {% endif %}
+      <div class="twits">
+        <!-- 트윗 목록 표시 영역 -->
+        <form id="hashtag-form" action="/hashtag">
+          <input type="text" name="hashtag" placeholder="태그 검색">
+          <!-- 해시태그 검색 입력 필드 -->
+          <button class="btn">검색</button>
+          <!-- 해시태그 검색 버튼 -->
+        </form>
+        {% for twit in twits %}
+        <!-- 각 트윗에 대해 반복 -->
+          <div class="twit">
+            <input type="hidden" value="{{twit.user.id}}" class="twit-user-id">
+            <!-- 트윗 작성자 ID를 저장하는 숨겨진 입력 필드 -->
+            <input type="hidden" value="{{twit.id}}" class="twit-id">
+            <!-- 트윗 ID를 저장하는 숨겨진 입력 필드 -->
+            <div class="twit-author">{{twit.User.nick}}</div>
+            <!-- 트윗 작성자의 닉네임 표시 -->
+            {% if not followingIdList.includes(twit.User.id) and twit.User.id !== user.id %}
+            <!-- 사용자가 팔로우하지 않은 다른 사용자의 경우 팔로우 버튼 표시 -->
+              <button class="twit-follow">팔로우하기</button>
+            {% endif %}
+            <div class="twit-content">{{twit.content}}</div>
+            <!-- 트윗 내용 표시 -->
+            {% if twit.img %}
+            <!-- 트윗에 이미지가 있는 경우 -->
+              <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
+              <!-- 트윗 이미지 표시 -->
+              {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    // 'img'라는 ID를 가진 요소가 존재하는지 확인
+    if (document.getElementById('img')) {
+      // 'img' 요소의 'change' 이벤트에 이벤트 리스너 추가
+      document.getElementById('img').addEventListener('change', function(e) {
+        // 새로운 FormData 객체 생성
+        const formData = new FormData();
+        // 현재 'img' 요소와 그 파일들을 콘솔에 출력
+        console.log(this, this.files);
+        // FormData 객체에 파일 추가
+        formData.append('img', this.files[0]);
+        // '/post/img' 경로로 FormData를 포함한 POST 요청 전송
+        axios.post('/post/img', formData)
+          .then((res) => {
+            // 서버로부터 받은 URL을 숨겨진 입력 필드에 설정
+            document.getElementById('img-url').value = res.data.url;
+            // 서버로부터 받은 URL을 미리보기 이미지의 src 속성에 설정
+            document.getElementById('img-preview').src = res.data.url;
+            // 미리보기 이미지를 화면에 표시
+            document.getElementById('img-preview').style.display = 'inline';
+          })
+          .catch((err) => {
+            // 에러가 발생하면 콘솔에 출력
+            console.error(err);
+          });
+      });
+    }
+    // 'twit-follow' 클래스를 가진 모든 요소 서택
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+      // 각 'twit-follow' 버튼에 클릭 이벤트 리스너 추가
+      tag.addEventListener('click', function() {
+        // 'my-id'라는 ID를 가진 요소 선택
+        const myId = document.querySelector('#my-id');
+        // 'my-id' 요소가 존재하는지 확인
+        if (myId) {
+          // 클릭된 버튼의 부모 요소에서 'twit-user-id' 클래스를 가진 요소의 값을 가져오기
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;
+          // 'my-id'와 'userId'가 서로 다른지 확인
+          if (userId !== myId.value) {
+            // 사용자가 팔로할 것인지 확인하는 메시지 표시
+            if (confirm('팔로잉하시겠습니까?')) {
+              // '/user/{userId}/follow' 경로로 POST 요청 전송
+              axios.post(`/user/${userId}/follow`)
+                .then(() => {
+                  // 성공하면 페이지 새로고침
+                  location.reload();
+                })
+                .catch((err) => {
+                  // 에러가 발생하면 콘솔에 출력
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+  </script>
+{% endblock %}
