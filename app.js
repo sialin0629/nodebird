@@ -9,6 +9,7 @@ const dotenv = require('dotenv'); // 환경 변수 관리
 // .env 파일에 정의도니 환경 변수를 로드
 dotenv.config();
 const pageRouter = require('./routes/page'); // 페이지 라우터를 불러오기
+const { sequelize } = require('./models'); // './models'에서 sequelize 객체 호출
 
 // express 애플리케이션 생성
 const app = express();
@@ -19,6 +20,14 @@ nunjucks.configure('views', {
   express: app, // express 애플리케이션 연결
   watch: true, // 템플릿 파일이 변경될 떄 자동으로 다시 로드되도록 설정
 });
+// 데이터베이스와 동기화 수행
+sequelize.sync({ force: false }) // 기존 테이블을 덮어 쓰지 않음.
+  .then(() => { // 동기화 성공 -> '데이터베이스 연결 성공' 출력
+    console.log('데이터베이스 연결 성공');  
+  })
+  .catch((err) => { // 동기화 실패 -> 오류 출력
+    console.error(err);
+  });
 
 app.use(morgan('dev')); // HTTP 요청 로그를 출력하는 미들웨어 추가
 app.use(express.static(path.join(__dirname, 'public'))); // 정적 파일 제공을 위한 디렉토리 설정
