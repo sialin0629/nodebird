@@ -21,11 +21,11 @@ class User extends Sequelize.Model { // User 모델 정의
         allowNull: false, // null 값 허용 X
         defaultValue: 'local', // 기본값: 'local'
         validate: { // 유효성 검사: 'provider' 필드 값이 'local' 또는 'kakao' 중 하나인지 확인
-          isIn: [['local', 'kakao']]
+          isIn: [['local', 'kakao', 'naver']]
         }
       },
       snsId: { // snsId 필드
-        type: Sequelize.STRING(30), // 최대 30자의 문자열 타입
+        type: Sequelize.STRING(50), // 최대 50자의 문자열 타입
         allowNull: true, // null 값 허용  
       },
     }, {

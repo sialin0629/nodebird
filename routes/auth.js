@@ -35,4 +35,14 @@ router.get('/kakao/callback', passport.authenticate('kakao', {
     res.redirect('/'); // 성공 시에는 메인 페이지(/)로 이동
 });
 
+// 네이버 로그인 요청 라우트
+router.get('/naver', passport.authenticate('naver'));
+
+// 네이버 로그인 콜백 라우트
+router.get('/naver/callback', passport.authenticate('naver', {
+  failureRedirect: '/?error=카카오로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
+}), (req, res) => {
+  res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
+});
+
 module.exports = router; // 라우터 객체를 모듈로 내보내기
