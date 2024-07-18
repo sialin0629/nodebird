@@ -2,29 +2,29 @@
 <!-- 'layout.html' 템플릿 확장 -->
 
 {% block content %}
-<!-- 'content' 블록 시작, 여기서 본문 콘텐츠 정의-->
-  <div class="timeline">
-    <div class="followings half">
-      <h2>팔로잉 목록</h2>
-      <!-- 유저의 팔로잉 목록이 있는지 확인 -->
-      {% if user.Followings %}
-        <!-- 팔로잉 목록을 반복문으로 출력 -->
-        {% for following in user.Followings %}
-          <!-- 각 팔로잉 유저의 닉네임을 출력 -->
-          <div>{{following.nick}}</div>
-        {% endfor %}
-      {% endif %}
+<!-- 'content' 블록 시작,  여기서 본문 콘텐츠 정의 -->
+    <div class="timeline">
+        <div class="followings half">
+            <h2>팔로잉 목록</h2>
+            <!-- 유저의 팔로잉 목록이 있는지 확인 -->
+            {% if user.Followings %}
+                <!-- 팔로잉 목록을 반복문으로 출력 -->
+                {% for following in user.Followings %}
+                    <!-- 각 팔로잉 유저의 닉네임을 출력 -->
+                    <div>{{following.nick}}</div>                    
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="followers half">
+            <h2>팔로워 목록</h2>
+            <!-- 유저의 팔로워 목록이 있는지 확인 -->
+            {% if user.Followers %}
+                <!-- 팔로워 목록을 반복문으로 출력 -->
+                {% for follower in user.Followers %}
+                    <!-- 각 팔로워 유저의 닉네임을 출력 -->
+                    <div>{{follower.nick}}</div>                    
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
-    <div class="followers half">
-      <h2>팔로워 목록</h2>
-      <!-- 유저의 팔로워 목록이 있는지 확인 -->
-      {% if user.Followers %}
-        <!-- 팔로워 목록을 반복문으로 출력 -->
-        {% for follower in user.Followers %}
-          <!-- 각 팔로워 유저의 닉네임을 출력 -->
-          <div>{{follower.nick}}</div>
-        {% endfor %}
-      {% endif %}
-    </div>
-  </div>
 {% endblock %}
