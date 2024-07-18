@@ -12,9 +12,9 @@ class Hashtag extends Sequelize.Model { // Hashtag 모델을 정의하는 클래
       sequelize, // Sequelize 인스턴스 연결
       timestamps: true, // createdAt, updatedAt 타임스탬프 자동 추가
       modelName: 'Hashtag', // 모델 이름을 'Hashtag'로 설정
-      tableName: 'hashtage', // 테이블 이름을 'hashtags'로 설정
+      tableName: 'hashtags', // 테이블 이름을 'hashtags'로 설정
       paranoid: false, // deletedAt 타임스탬프 추가 X (소프트 삭제 비활성화)
-      charset: 'utf-8', // 테이블의 문자 집합을 UTF-8로 설정
+      charset: 'utf8', // 테이블의 문자 집합을 UTF-8로 설정
       collate: 'utf8_general_ci', // 테이블의 정렬 기준을 UTF-8 일반 대소문자 구분없이 설정
     });  
   }
