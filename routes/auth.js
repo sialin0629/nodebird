@@ -40,7 +40,17 @@ router.get('/naver', passport.authenticate('naver'));
 
 // 네이버 로그인 콜백 라우트
 router.get('/naver/callback', passport.authenticate('naver', {
-  failureRedirect: '/?error=카카오로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
+  failureRedirect: '/?error=네이버로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
+}), (req, res) => {
+  res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
+});
+
+// 페이스북 로그인 요청 라우트
+router.get('/facebook', passport.authenticate('facebook'));
+
+// 페이스북 로그인 콜백 라우트
+router.get('/facebook/callback', passport.authenticate('facebook', {
+  failureRedirect: '/?error=페이스북로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
 }), (req, res) => {
   res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
 });

@@ -2,8 +2,8 @@ const passport = require('passport'); // passport 모듈 불러오기
 const local = require('./localStrategy'); // 로컬 인증 전략 불러오기
 const kakao = require('./kakaoStrategy'); // 카카오 인증 전략 불러오기
 const naver = require('./naverStrategy'); // 네이버 인증 전략 불러오기
+const facebook = require('./facebookStrategy'); // 네이버 인증 전략 불러오기
 const User = require('../models/user'); // User 모델 불러오기
-const naverStrategy = require('./naverStrategy');
 
 module.exports = () => {
     // 사용자 정보를 세션에 저장 -> 사용자 인증 시 호출
@@ -39,4 +39,5 @@ module.exports = () => {
     local(); // 로컬 인증 전략 설정
     kakao(); // 카카오 인증 전략 설정
     naver(); // 네이버 인증 전략 설정
+    facebook(); // 페이스북 인증 전략 설정
 }

@@ -21,7 +21,7 @@ class User extends Sequelize.Model { // User 모델 정의
         allowNull: false, // null 값 허용 X
         defaultValue: 'local', // 기본값: 'local'
         validate: { // 유효성 검사: 'provider' 필드 값이 'local' 또는 'kakao' 중 하나인지 확인
-          isIn: [['local', 'kakao', 'naver']]
+          isIn: [['local', 'kakao', 'naver', 'facebook']]
         }
       },
       snsId: { // snsId 필드
