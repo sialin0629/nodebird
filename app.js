@@ -13,6 +13,7 @@ const pageRouter = require('./routes/page'); // 페이지 관련 라우터를 �
 const authRouter = require('./routes/auth'); // 인증 관련 라우터를 불러오기
 const postRouter = require('./routes/post'); // 포스트 관련 라우터를 불러오기
 const userRouter = require('./routes/user'); // 사용자 관련 라우터를 불러오기
+const likeRouter = require('./routes/like'); // 좋아용 관련 라우터를 불러오기
 const { sequelize } = require('./models'); // Sequelize 인스턴스를 가져오기
 const passportConfig = require('./passport'); // Passport 설정을 불러오기
 
@@ -63,6 +64,8 @@ app.use('/', pageRouter); // '/' 경로로 들어오는 요청을 pageRouter로 
 app.use('/auth', authRouter); // '/auth' 경로로 들어오는 요청을 authRouter로 처리
 app.use('/post', postRouter); // '/post' 경로로 들어오는 요청을 postRouter로 처리
 app.use('/user', userRouter); // '/user' 경로로 들어오는 요청을 userRouter로 처리
+app.use('/like', likeRouter); // '/user' 경로로 들어오는 요청을 userRouter로 처리
+
 
 // 요청한 라우터가 없을 경우 404 에러를 처리하는 미들웨어 추가
 app.use((req, res, next) => {

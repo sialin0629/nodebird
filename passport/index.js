@@ -2,8 +2,10 @@ const passport = require('passport'); // passport 모듈 불러오기
 const local = require('./localStrategy'); // 로컬 인증 전략 불러오기
 const kakao = require('./kakaoStrategy'); // 카카오 인증 전략 불러오기
 const naver = require('./naverStrategy'); // 네이버 인증 전략 불러오기
-const facebook = require('./facebookStrategy'); // 네이버 인증 전략 불러오기
-const User = require('../models/user'); // User 모델 불러오기
+const facebook = require('./facebookStrategy'); // 페이스북 인증 전략 불러오기
+const google = require('./googleStrategy'); // 구글 인증 전략 불러오기
+// const microsoft = require('./microsoftStrategy'); // 마이크로 소프트 인증 전략 불러오기
+const { User, Post } = require('../models'); // User 모델 불러오기
 
 module.exports = () => {
     // 사용자 정보를 세션에 저장 -> 사용자 인증 시 호출
@@ -30,6 +32,9 @@ module.exports = () => {
                 model: User, // User 모델 포함
                 attributes: ['id', 'nick'], // 포함할 속성 -> id,  nick
                 as: 'Followings', // 팔로잉 정보 가져오기
+            }, {
+                model: Post,
+                as: 'LikedPosts',
             }],
         })
         .then(user => done(null, user)) // 사용자 정보를 찾아 done 콜백으로 전달 -> req.user에 저장
@@ -40,4 +45,6 @@ module.exports = () => {
     kakao(); // 카카오 인증 전략 설정
     naver(); // 네이버 인증 전략 설정
     facebook(); // 페이스북 인증 전략 설정
+    google(); // 구글 인증 전략 설정
+    // microsoft(); // 마이크로소프트 인증 전략 설정
 }

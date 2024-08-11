@@ -46,9 +46,15 @@
                     <!-- 트윗 ID를 저장하는 숨겨진 입력 필드 -->
                     <div class="twit-author">{{twit.User.nick}}</div>
                     <!-- 트윗 작성자의 닉네임 표시 -->
+                    {% if user.id === twit.User.id %}
+                    <button class="twit-delete">삭제</button>
+                    {% endif %}
                     {% if not followingIdList.includes(twit.User.id) and twit.User.id !== user.id %}
                     <!-- 사용자가 팔로우하지 않은 다른 사용자의 경우 팔로우 버튼 표시 -->
                         <button class="twit-follow">팔로우하기</button>
+                    {% endif %}
+                    {% if user and followingIdList.includes(twit.User.id) and twit.User.id !== user.id %}
+                    <button class="twit-follow-cancle">언팔로우하기</button>
                     {% endif %}
                     <div class="twit-content">{{twit.content}}</div>
                     <!-- 트윗 내용 표시 -->
@@ -57,6 +63,14 @@
                         <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
                         <!-- 트윗 이미지 표시 -->
                     {% endif %}
+                    {% if user %}
+                        {% if likedPostIds and likedPostIds.includes(twit.id) %}
+                            <button class="twit-like">좋아요</button>
+                        {% else %}
+                            <button class="twit-like-yet">좋아요</button>
+                        {% endif %}
+                    {% endif %}
+                    <!-- 좋아요 수 표시 -->
                 </div>
             {% endfor %}
         </div>
@@ -116,6 +130,86 @@
                                     console.error(err);
                                 });
                         }
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.twit-follow-cancle').forEach(function (tag) {
+        tag.addEventListener('click', function () {
+            var isLoggedIn = document.querySelector('#my-id');
+            if (isLoggedIn) {
+                var userId = tag.parentNode.querySelector('.twit-author').innerHTML;
+                var myId = isLoggedIn.value;
+                if (userId !== myId) {
+                    if (confirm('팔로우를 끊겠습니까?')) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                location.reload();
+                            } else {
+                                console.error(xhr.responseText);
+                            }
+                        };
+                        xhr.open('POST', '/user/' + userId + '/followCancle');
+                        xhr.send();
+                    }
+                }
+            }
+        });
+    });
+
+        document.querySelectorAll('.twit-like-yet').forEach(function (tag) {
+            tag.addEventListener('click', function () {
+                var isLoggedIn = document.querySelector('#my-id')
+                if (isLoggedIn) {
+                    var postId = tag.parentNode.querySelector('.twit-id').value;
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            location.reload();
+                        } else {
+                            console.error(xhr.responseText);
+                        }
+                    };
+                    xhr.open('POST', '/like/add/' + postId);
+                    xhr.send();
+                }
+            });
+        });
+
+        document.querySelectorAll('.twit-like').forEach(function (tag) {
+            tag.addEventListener('click', function () {
+                var isLoggedIn = document.querySelector('#my-id')
+                if (isLoggedIn) {
+                    var postId = tag.parentNode.querySelector('.twit-id').value;
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            location.reload();
+                        } else {
+                            console.error(xhr.responseText);
+                        }
+                    };
+                    xhr.open('POST', '/like/cancle/' + postId);
+                    xhr.send();
+                }
+            });
+        });
+
+        document.querySelectorAll('.twit-delete').forEach(function(tag) {
+            tag.addEventListener('click', function() {
+                if(confirm('삭제하시겠습니까?')){
+                    const userId = tag.parentNode.querySelector('.twit-user-id').value;
+                    const twitId = tag.parentNode.querySelector('.twit-id').value;
+                    console.log(userId, twitId)
+                    try{
+                        axios.delete(`/post/${twitId}`)
+                        then(() => {
+                            location.reload();
+                        })
+                    } catch(err){
+                        console.log(err);
                     }
                 }
             });

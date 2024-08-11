@@ -10,8 +10,11 @@
             {% if user.Followings %}
                 <!-- 팔로잉 목록을 반복문으로 출력 -->
                 {% for following in user.Followings %}
-                    <!-- 각 팔로잉 유저의 닉네임을 출력 -->
-                    <div>{{following.nick}}</div>                    
+                    <!-- 각 팔로잉 항목을 묶는 div -->
+                    <div>
+                        <div class="fingNick">{{ following.nick }}</div>
+                        <button class="twit-follow-cancle">팔로우 끊기</button>
+                    </div>
                 {% endfor %}
             {% endif %}
         </div>
@@ -21,10 +24,40 @@
             {% if user.Followers %}
                 <!-- 팔로워 목록을 반복문으로 출력 -->
                 {% for follower in user.Followers %}
-                    <!-- 각 팔로워 유저의 닉네임을 출력 -->
-                    <div>{{follower.nick}}</div>                    
+                    <!-- 각 팔로워 항목을 묶는 div -->
+                    <div class="follower-item">
+                        <div class="followerNick">{{ follower.nick }}</div>
+                    </div>
                 {% endfor %}
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.querySelectorAll('.twit-follow-cancle').forEach(function (tag) {
+        tag.addEventListener('click', function () {
+            var isLoggedIn = document.querySelector('#my-id');
+            if (isLoggedIn) {
+                var userId = tag.parentNode.querySelector('.fingNick').innerHTML;
+                var myId = isLoggedIn.value;
+                if (userId !== myId) {
+                    if (confirm('팔로우를 끊겠습니까?')) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                location.reload();
+                            } else {
+                                console.error(xhr.responseText);
+                            }
+                        };
+                        xhr.open('POST', '/user/' + userId + '/followCancle');
+                        xhr.send();
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

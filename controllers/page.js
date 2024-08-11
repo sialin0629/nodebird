@@ -26,11 +26,18 @@ exports.renderMain = async (req, res, next) => {
             // 생성시각(createdAt)을 기준으로 내림차순(DESC) 정렬
             order: [['createdAt', 'DESC']],
         });
+
+        const user = req.user;
+        
+        // 로그인된 사용자가 없으면 빈 배열 반환
+        const likedPostIds = user ? user.LikedPosts.map(post => post.id) : [];
+
          // 'main' 템플릿 렌더링, 'title' 변수에 'NodeBird' 값 설정
          // 'twits' 변수 -> 포스트 목록(posts) 설정
         res.render('main', {
             title: 'NodeBird', // 페이지 타이틀 설정
-            twits: posts, // 트윗 목록 설정
+            twits: posts,
+            likedPostIds // 트윗 목록 설정
         });
     } catch (err) {
         // 에러 발생 -> 콘솔에 에러 출력, 에러 처리 미들웨어로 전달
@@ -49,6 +56,11 @@ exports.renderHashtag = async (req, res, next) => {
         // 해시태그 제목으로 데이터베이스에서 해시태그 찾기
         const hashtag = await Hashtag.findOne({ where: { title: query } });
         let posts = []; // 포스트 목록 초기화
+        const user = req.user;
+        
+        // 로그인된 사용자가 없으면 빈 배열 반환
+        const likedPostIds = user ? user.LikedPosts.map(post => post.id) : [];
+
         if (hashtag) {
             // 해시태그가 존재하면 관련된 포스트 가져오기
             posts = await hashtag.getPosts({ include: [{ model: User }] });
@@ -57,7 +69,8 @@ exports.renderHashtag = async (req, res, next) => {
         // 'main' 템플릿 렌더링, 해시태그와 관련된 포스트 목록 설정
         return res.render('main', {
             title: `${query} | NodeBird`, // 페이지 타이틀에 해시태그 추가
-            twits: posts, // 트윗 목록 설정
+            twits: posts,
+            likedPostIds // 트윗 목록 설정
         });
     } catch (error) {
         console.error(error); // 에러를 콘솔에 출력

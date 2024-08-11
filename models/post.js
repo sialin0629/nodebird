@@ -28,7 +28,14 @@ class Post extends Sequelize.Model { // Post 모델을 정의하는 클래스
         db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
         // Post 모델은 여러 Hashtag 모델과 다대다 관계
         // 중간 테이블 'PostHashtag'를 통해 설정됨.
+        db.Post.belongsToMany(db.User, {
+            foreignKey: 'likedPostId',
+            as: 'Likers',
+            through: 'Like'
+        });
     } 
+
+    
 }
 
 module.exports = Post; // Post 모델을 모듈로 내보냄.

@@ -55,4 +55,24 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
   res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
 });
 
+// 구글 로그인 요청 라우트
+router.get('/google', passport.authenticate('google'));
+
+// 페이스북 로그인 콜백 라우트
+router.get('/google/callback', passport.authenticate('google', {
+  failureRedirect: '/?error=구글로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
+}), (req, res) => {
+  res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
+});
+
+// // 구글 로그인 요청 라우트
+// router.get('/microsoft', passport.authenticate('microsoft'));
+
+// // 페이스북 로그인 콜백 라우트
+// router.get('/microsoft/callback', passport.authenticate('microsoft', {
+//   failureRedirect: '/?error=마이크로소프트로그인 실패', // 로그인 실패 시 리디렉션할 URL 설정
+// }), (req, res) => {
+//   res.redirect('/'); // 로그인 성공 시 리디렉션할 URL 설정
+// });
+
 module.exports = router; // 라우터 객체를 모듈로 내보내기

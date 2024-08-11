@@ -21,7 +21,7 @@ class User extends Sequelize.Model { // User 모델 정의
         allowNull: false, // null 값 허용 X
         defaultValue: 'local', // 기본값: 'local'
         validate: { // 유효성 검사: 'provider' 필드 값이 'local' 또는 'kakao' 중 하나인지 확인
-          isIn: [['local', 'kakao', 'naver', 'facebook']]
+          isIn: [['local', 'kakao', 'naver', 'facebook', "google"]]
         }
       },
       snsId: { // snsId 필드
@@ -51,6 +51,11 @@ class User extends Sequelize.Model { // User 모델 정의
       foreignKey: 'followerId', // followingId를 외래키로 설정
       as: 'Followings', // 이 관계를 'Followings'로 참조
       through: 'Follow',  // 'Follow' 테이블을 통해 다대다 관계를 설정
+    });
+    db.User.belongsToMany(db.Post, {
+      foreignKey: 'likerId',
+      as: 'LikedPosts',
+      through: 'Like',
     });
   }
 };
